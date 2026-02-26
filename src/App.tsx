@@ -9,6 +9,7 @@ import System from "./pages/System";
 import Reports from "./pages/Reports";
 import HR from "./pages/HR";
 import ModulePage from "./pages/ModulePage";
+import Attendance from "./pages/Attendance";
 
 // A simple auth guard component
 function RequireAuth({ children }: { children: JSX.Element }) {
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="system" element={<System />} />
           <Route path="reports" element={<Reports />} />
           <Route path="hr" element={<HR />} />
+          <Route path="attendance" element={<Attendance />} />
           <Route path="module/:id" element={<ModulePage />} />
         </Route>
       </Routes>

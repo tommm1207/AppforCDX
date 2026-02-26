@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/ca
 import { Users, Clock, Banknote, FileSpreadsheet, Calculator, UserCog, Settings, ChevronRight } from "lucide-react";
 
 const hrModules = [
-  { id: "cham-cong", name: "Chấm công", icon: Clock, color: "text-blue-600", bgColor: "bg-blue-100" },
-  { id: "tam-ung-phu-cap", name: "Tạm ứng & phụ cấp", icon: Banknote, color: "text-amber-600", bgColor: "bg-amber-100" },
-  { id: "bao-cao-luong", name: "Báo cáo lương", icon: FileSpreadsheet, color: "text-purple-600", bgColor: "bg-purple-100" },
-  { id: "tong-hop-luong", name: "Tổng hợp lương/tháng", icon: Users, color: "text-emerald-600", bgColor: "bg-emerald-100" },
-  { id: "tinh-luong", name: "Tính lương", icon: Calculator, color: "text-indigo-600", bgColor: "bg-indigo-100" },
-  { id: "quan-ly-nhan-su", name: "Quản lý nhân sự", icon: UserCog, color: "text-rose-600", bgColor: "bg-rose-100" },
-  { id: "cai-dat-luong", name: "Cài đặt lương", icon: Settings, color: "text-slate-600", bgColor: "bg-slate-100" },
+  { id: "cham-cong", name: "Chấm công", icon: Clock, color: "text-blue-600", bgColor: "bg-blue-100", path: "/attendance" },
+  { id: "tam-ung-phu-cap", name: "Tạm ứng & phụ cấp", icon: Banknote, color: "text-amber-600", bgColor: "bg-amber-100", path: "/module/tam-ung-phu-cap" },
+  { id: "bao-cao-luong", name: "Báo cáo lương", icon: FileSpreadsheet, color: "text-purple-600", bgColor: "bg-purple-100", path: "/module/bao-cao-luong" },
+  { id: "tong-hop-luong", name: "Tổng hợp lương/tháng", icon: Users, color: "text-emerald-600", bgColor: "bg-emerald-100", path: "/module/tong-hop-luong" },
+  { id: "tinh-luong", name: "Tính lương", icon: Calculator, color: "text-indigo-600", bgColor: "bg-indigo-100", path: "/module/tinh-luong" },
+  { id: "quan-ly-nhan-su", name: "Quản lý nhân sự", icon: UserCog, color: "text-rose-600", bgColor: "bg-rose-100", path: "/module/quan-ly-nhan-su" },
+  { id: "cai-dat-luong", name: "Cài đặt lương", icon: Settings, color: "text-slate-600", bgColor: "bg-slate-100", path: "/module/cai-dat-luong" },
 ];
 
 export default function HR() {
@@ -22,7 +22,7 @@ export default function HR() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {hrModules.map((mod) => (
-          <Link key={mod.id} to={`/module/${mod.id}`}>
+          <Link key={mod.id} to={mod.path}>
             <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-emerald-200">
               <CardHeader className="pb-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${mod.bgColor}`}>

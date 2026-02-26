@@ -197,17 +197,6 @@ export default function ModulePage() {
     );
   };
 
-  const handleClearData = () => {
-    confirmDelete(
-      () => {
-        saveDataAndHeaders([], []);
-        setSelectedIds(new Set());
-      },
-      "Xóa toàn bộ dữ liệu",
-      "Bạn có chắc chắn muốn xóa TOÀN BỘ dữ liệu của mục này? Hành động này không thể hoàn tác."
-    );
-  };
-
   const toggleSelectAll = () => {
     if (selectedIds.size === filteredData.length && filteredData.length > 0) {
       setSelectedIds(new Set());
@@ -288,16 +277,16 @@ export default function ModulePage() {
               />
             </div>
             <div className="flex flex-wrap gap-2">
-              {selectedIds.size > 0 && (
+              {selectedIds.size > 0 && selectedIds.size < filteredData.length && (
                 <Button variant="destructive" className="gap-2" onClick={handleDeleteSelected}>
                   <CheckSquare className="h-4 w-4" />
                   Xóa {selectedIds.size} mục đã chọn
                 </Button>
               )}
-              {tableData.length > 0 && selectedIds.size === 0 && (
-                <Button variant="destructive" className="gap-2" onClick={handleClearData}>
+              {selectedIds.size > 0 && selectedIds.size === filteredData.length && (
+                <Button variant="destructive" className="gap-2" onClick={handleDeleteSelected}>
                   <Trash2 className="h-4 w-4" />
-                  Xóa hết
+                  Xóa hết ({selectedIds.size} mục)
                 </Button>
               )}
             </div>
