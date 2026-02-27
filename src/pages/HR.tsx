@@ -23,7 +23,7 @@ export default function HR() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {hrModules.map((mod) => (
           <Link key={mod.id} to={mod.path}>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-brand-200">
+            <Card className="hover:shadow-md transition-all duration-200 active:scale-[0.98] cursor-pointer h-full border-slate-200 hover:border-brand-200">
               <CardHeader className="pb-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${mod.bgColor}`}>
                   <mod.icon className={`h-6 w-6 ${mod.color}`} />

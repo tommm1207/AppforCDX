@@ -75,7 +75,7 @@ export default function DashboardLayout() {
         <div className="p-6 border-b border-slate-200 flex items-center justify-between md:justify-start gap-3">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg overflow-hidden shrink-0 shadow-sm border border-slate-200">
-              <img src="/logo.svg" alt="CDX Logo" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              <img src="/logo.png" alt="CDX Logo" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             </div>
             <div>
               <h1 className="font-bold text-slate-900 leading-tight">CDX</h1>
@@ -110,7 +110,7 @@ export default function DashboardLayout() {
               onClick={closeMobileMenu}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 active:scale-[0.98]",
                   isActive
                     ? "bg-brand-50 text-brand-700"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -126,7 +126,7 @@ export default function DashboardLayout() {
         <div className="p-4 border-t border-slate-200">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-md text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-md text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 active:scale-[0.98]"
           >
             <LogOut className="h-5 w-5" />
             Đăng xuất

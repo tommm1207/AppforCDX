@@ -350,7 +350,7 @@ export default function ModulePage() {
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((row, rowIndex) => (
-                    <tr key={row._id} className={`border-b border-slate-100 hover:bg-slate-50 ${selectedIds.has(row._id) ? 'bg-brand-50/50' : ''}`}>
+                    <tr key={row._id} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${selectedIds.has(row._id) ? 'bg-brand-50/50' : ''}`}>
                       <td className="px-6 py-4 w-12">
                         <input 
                           type="checkbox" 

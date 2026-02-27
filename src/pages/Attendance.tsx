@@ -255,7 +255,7 @@ export default function Attendance() {
                 <tbody>
                   {employees.length > 0 ? (
                     employees.map((emp) => (
-                      <tr key={emp.id} className="border-b border-slate-100 hover:bg-slate-50 group">
+                      <tr key={emp.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
                         <td className="px-4 py-2 text-left border-r border-slate-200 sticky left-0 bg-white group-hover:bg-slate-50 z-10">
                           <div className="flex items-center justify-between">
                             <div>
