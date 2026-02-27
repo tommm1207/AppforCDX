@@ -89,7 +89,7 @@ export default function DashboardLayout() {
         
         <div className="px-4 pt-4 pb-2">
           <div className="bg-slate-100 rounded-lg p-3 flex items-center gap-3">
-            <div className="h-8 w-8 bg-emerald-200 rounded-full flex items-center justify-center text-emerald-800 font-bold">
+            <div className="h-8 w-8 bg-brand-200 rounded-full flex items-center justify-center text-brand-800 font-bold">
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -112,7 +112,7 @@ export default function DashboardLayout() {
                 cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-emerald-50 text-emerald-700"
+                    ? "bg-brand-50 text-brand-700"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 )
               }

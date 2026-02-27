@@ -19,7 +19,7 @@ export default function Costs() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
           <Link key={item.id} to={`/module/${item.id}`}>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-emerald-200">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-brand-200">
               <CardHeader className="pb-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${item.bgColor}`}>
                   <item.icon className={`h-6 w-6 ${item.color}`} />
@@ -27,7 +27,7 @@ export default function Costs() {
                 <CardTitle className="text-lg leading-tight">{item.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center text-sm text-emerald-600 font-medium">
+                <div className="flex items-center text-sm text-brand-600 font-medium">
                   Truy cập <ChevronRight className="h-4 w-4 ml-1" />
                 </div>
               </CardContent>

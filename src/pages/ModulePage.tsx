@@ -322,7 +322,7 @@ export default function ModulePage() {
                   <th className="px-6 py-4 font-medium w-12">
                     <input 
                       type="checkbox" 
-                      className="rounded border-slate-300 w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      className="rounded border-slate-300 w-4 h-4 text-brand-600 focus:ring-brand-500 cursor-pointer"
                       checked={filteredData.length > 0 && selectedIds.size === filteredData.length}
                       onChange={toggleSelectAll}
                     />
@@ -350,11 +350,11 @@ export default function ModulePage() {
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((row, rowIndex) => (
-                    <tr key={row._id} className={`border-b border-slate-100 hover:bg-slate-50 ${selectedIds.has(row._id) ? 'bg-emerald-50/50' : ''}`}>
+                    <tr key={row._id} className={`border-b border-slate-100 hover:bg-slate-50 ${selectedIds.has(row._id) ? 'bg-brand-50/50' : ''}`}>
                       <td className="px-6 py-4 w-12">
                         <input 
                           type="checkbox" 
-                          className="rounded border-slate-300 w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                          className="rounded border-slate-300 w-4 h-4 text-brand-600 focus:ring-brand-500 cursor-pointer"
                           checked={selectedIds.has(row._id)}
                           onChange={() => toggleSelectRow(row._id)}
                         />

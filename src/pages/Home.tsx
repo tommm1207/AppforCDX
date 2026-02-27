@@ -17,7 +17,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0 ₫</div>
-            <p className="text-xs text-slate-500 mt-1 flex items-center text-emerald-600">
+            <p className="text-xs text-slate-500 mt-1 flex items-center text-brand-600">
               <TrendingUp className="h-3 w-3 mr-1" /> +0% so với tháng trước
             </p>
           </CardContent>

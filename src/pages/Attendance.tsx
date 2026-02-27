@@ -172,7 +172,7 @@ export default function Attendance() {
         <Card className="lg:col-span-1 h-fit">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
-              <UserPlus className="h-5 w-5 text-emerald-600" />
+              <UserPlus className="h-5 w-5 text-brand-600" />
               Thêm nhân viên
             </CardTitle>
           </CardHeader>
@@ -202,7 +202,7 @@ export default function Attendance() {
             <div className="pt-4 border-t mt-4">
               <h4 className="text-sm font-semibold mb-2 text-slate-700">Ghi chú ký hiệu:</h4>
               <ul className="text-sm space-y-1 text-slate-600">
-                <li><span className="font-bold text-emerald-600 w-6 inline-block">X</span> : Đi làm cả ngày (1 công)</li>
+                <li><span className="font-bold text-brand-600 w-6 inline-block">X</span> : Đi làm cả ngày (1 công)</li>
                 <li><span className="font-bold text-blue-600 w-6 inline-block">H</span> : Làm nửa ngày (0.5 công)</li>
                 <li><span className="font-bold text-amber-600 w-6 inline-block">P</span> : Nghỉ có phép (0 công)</li>
                 <li><span className="font-bold text-red-600 w-6 inline-block">V</span> : Vắng mặt (0 công)</li>
@@ -216,7 +216,7 @@ export default function Attendance() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-4 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <CardTitle className="text-lg flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-emerald-600" />
+              <CalendarDays className="h-5 w-5 text-brand-600" />
               Bảng chấm công
             </CardTitle>
             <div className="flex items-center gap-4 bg-slate-50 p-1 rounded-lg border border-slate-200">
@@ -247,7 +247,7 @@ export default function Attendance() {
                         {day}
                       </th>
                     ))}
-                    <th className="px-4 py-3 font-bold border-l border-slate-300 bg-emerald-50 text-emerald-800 sticky right-0 z-20">
+                    <th className="px-4 py-3 font-bold border-l border-slate-300 bg-brand-50 text-brand-800 sticky right-0 z-20">
                       Tổng
                     </th>
                   </tr>
@@ -279,7 +279,7 @@ export default function Attendance() {
                               key={day} 
                               className={`px-1 py-2 border-r border-slate-100 cursor-pointer select-none transition-colors
                                 ${isWeekend(day) ? 'bg-slate-50' : ''}
-                                ${status === 'X' ? 'text-emerald-600 font-bold bg-emerald-50/50' : ''}
+                                ${status === 'X' ? 'text-brand-600 font-bold bg-brand-50/50' : ''}
                                 ${status === 'H' ? 'text-blue-600 font-bold bg-blue-50/50' : ''}
                                 ${status === 'P' ? 'text-amber-600 font-bold bg-amber-50/50' : ''}
                                 ${status === 'V' ? 'text-red-600 font-bold bg-red-50/50' : ''}
@@ -291,7 +291,7 @@ export default function Attendance() {
                             </td>
                           );
                         })}
-                        <td className="px-4 py-2 font-bold text-emerald-700 border-l border-slate-300 bg-emerald-50/30 sticky right-0 z-10">
+                        <td className="px-4 py-2 font-bold text-brand-700 border-l border-slate-300 bg-brand-50/30 sticky right-0 z-10">
                           {calculateTotal(emp.id)}
                         </td>
                       </tr>

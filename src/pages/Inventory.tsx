@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/ca
 import { PackagePlus, PackageMinus, ArrowRightLeft, ClipboardList, List, Library, ChevronRight } from "lucide-react";
 
 const items = [
-  { id: "nhap-kho", name: "Nhập kho", icon: PackagePlus, color: "text-emerald-600", bgColor: "bg-emerald-100" },
+  { id: "nhap-kho", name: "Nhập kho", icon: PackagePlus, color: "text-brand-600", bgColor: "bg-brand-100" },
   { id: "xuat-kho", name: "Xuất kho", icon: PackageMinus, color: "text-amber-600", bgColor: "bg-amber-100" },
   { id: "luan-chuyen-kho", name: "Luân chuyển kho", icon: ArrowRightLeft, color: "text-blue-600", bgColor: "bg-blue-100" },
   { id: "bao-cao-nhap-xuat-ton", name: "Báo cáo nhập xuất tồn", icon: ClipboardList, color: "text-purple-600", bgColor: "bg-purple-100" },
@@ -22,7 +22,7 @@ export default function Inventory() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
           <Link key={item.id} to={`/module/${item.id}`}>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-emerald-200">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-slate-200 hover:border-brand-200">
               <CardHeader className="pb-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${item.bgColor}`}>
                   <item.icon className={`h-6 w-6 ${item.color}`} />
@@ -30,7 +30,7 @@ export default function Inventory() {
                 <CardTitle className="text-lg leading-tight">{item.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center text-sm text-emerald-600 font-medium">
+                <div className="flex items-center text-sm text-brand-600 font-medium">
                   Truy cập <ChevronRight className="h-4 w-4 ml-1" />
                 </div>
               </CardContent>
