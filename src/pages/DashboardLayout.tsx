@@ -7,8 +7,12 @@ import { Button } from "@/src/components/ui/button";
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [userRole, setUserRole] = useState("user");
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [rawRole, setRawRole] = useState("");
+  const [hrProfile, setHrProfile] = useState<Record<string, any> | null>(null);
 
   useEffect(() => {
     const userStr = localStorage.getItem("currentUser");
@@ -16,8 +20,31 @@ export default function DashboardLayout() {
       const user = JSON.parse(userStr);
       setUserRole(user.role || "user");
       setUserName(user.name || user.id);
+      setUserId(user.id || "");
+      setRawRole(user.rawRole || user.role || "user");
     }
   }, []);
+
+  useEffect(() => {
+    if (isProfileModalOpen && userId && !hrProfile) {
+      const fetchHrProfile = async () => {
+        try {
+          const res = await fetch(`/api/modules/quan-ly-nhan-su`);
+          if (res.ok) {
+            const result = await res.json();
+            const data = result.data || [];
+            const profile = data.find((emp: any) => String(emp.ID) === String(userId) || String(emp.id) === String(userId));
+            if (profile) {
+              setHrProfile(profile);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch HR profile:", error);
+        }
+      };
+      fetchHrProfile();
+    }
+  }, [isProfileModalOpen, userId, hrProfile]);
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
@@ -50,13 +77,10 @@ export default function DashboardLayout() {
       {/* Fixed Top Navbar */}
       <nav className="fixed top-0 left-0 right-0 h-[60px] bg-[#2E7D32] text-white flex items-center justify-between px-3 md:px-4 z-50 shadow-sm">
         <div className="flex items-center gap-3">
-          <button 
-            className="p-2 hover:bg-white/10 rounded-md transition-colors md:hidden"
+          <div 
+            className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1.5 rounded-md transition-colors" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <Menu className="h-6 w-6" />
-          </button>
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
             <div className="h-8 w-8 bg-white rounded-sm p-1 flex items-center justify-center">
               <img src="/logo.png" alt="Logo" className="h-full w-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             </div>
@@ -65,7 +89,10 @@ export default function DashboardLayout() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded-md cursor-pointer transition-colors">
+          <div 
+            className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded-md cursor-pointer transition-colors"
+            onClick={() => setIsProfileModalOpen(true)}
+          >
             <UserCircle className="h-5 w-5" />
             <span className="font-medium hidden md:block">{userName}</span>
           </div>
@@ -133,6 +160,66 @@ export default function DashboardLayout() {
           </button>
         </div>
       </aside>
+
+      {/* User Profile Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4" onClick={() => setIsProfileModalOpen(false)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-[#2E7D32] p-6 text-white text-center relative">
+              <button 
+                className="absolute top-3 right-3 p-1 hover:bg-white/20 rounded-full transition-colors"
+                onClick={() => setIsProfileModalOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="h-20 w-20 bg-white/20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-3 border-2 border-white/50">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <h3 className="text-xl font-bold">{userName}</h3>
+              <p className="text-white/80 text-sm mt-1">{rawRole}</p>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                  <span className="text-slate-500 text-sm">Mã nhân viên (ID)</span>
+                  <span className="font-medium text-slate-900">{userId}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                  <span className="text-slate-500 text-sm">Phân quyền hệ thống</span>
+                  <span className="font-medium text-slate-900">{userRole === 'admin' ? 'Quản trị viên' : 'Nhân viên'}</span>
+                </div>
+                {hrProfile ? (
+                  Object.entries(hrProfile)
+                    .filter(([key]) => key !== '_id' && key !== 'app_pass' && key !== 'App Pass' && key !== 'Mật khẩu' && key !== 'ID' && key !== 'id' && key !== 'Tên' && key !== 'name')
+                    .map(([key, value]) => (
+                      <div key={key} className="flex justify-between items-center py-2 border-b border-slate-100">
+                        <span className="text-slate-500 text-sm">{key}</span>
+                        <span className="font-medium text-slate-900">{String(value)}</span>
+                      </div>
+                    ))
+                ) : (
+                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span className="text-slate-500 text-sm">Chức vụ (HR)</span>
+                    <span className="font-medium text-slate-900">{rawRole}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="pt-4">
+                <Button 
+                  variant="destructive" 
+                  className="w-full gap-2 h-11"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Đăng xuất
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1 pt-[60px] md:pl-[260px] pb-[65px] md:pb-0 flex flex-col min-h-screen">

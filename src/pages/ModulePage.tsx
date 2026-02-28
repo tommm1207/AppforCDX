@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -21,6 +21,17 @@ export default function ModulePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  // Current User Role
+  const [rawRole, setRawRole] = useState("");
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("currentUser");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setRawRole(user.rawRole || user.role || "user");
+    }
+  }, []);
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -33,16 +44,6 @@ export default function ModulePage() {
     message: "",
     onConfirm: () => {}
   });
-
-  const [userRole, setUserRole] = useState("user");
-
-  useEffect(() => {
-    const userStr = localStorage.getItem("currentUser");
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      setUserRole(user.role || "user");
-    }
-  }, []);
 
   // Format ID to readable title
   const title = id
@@ -158,7 +159,7 @@ export default function ModulePage() {
       
       // Specific default headers for HR module to support login
       if (id === "quan-ly-nhan-su") {
-        defaultHeaders = ["ID", "Tên", "Mật khẩu", "Phân quyền", "Phòng ban", "Trạng thái"];
+        defaultHeaders = ["ID", "Tên", "app_pass", "Phân quyền", "Phòng ban", "Trạng thái"];
       }
       
       saveDataAndHeaders(defaultHeaders, tableData);
@@ -260,12 +261,15 @@ export default function ModulePage() {
     });
   }, [tableData, headers, searchQuery]);
 
+  // Visible headers based on role
   const visibleHeaders = useMemo(() => {
-    return headers.filter(h => {
-      if (h === "Mật khẩu" && userRole !== "admin") return false;
-      return true;
-    });
-  }, [headers, userRole]);
+    if (id !== "quan-ly-nhan-su") return headers;
+    const currentRawRole = rawRole.toLowerCase();
+    if (currentRawRole.includes("admin app") || currentRawRole.includes("quản lý app")) {
+      return headers;
+    }
+    return headers.filter(h => h !== "app_pass" && h !== "App Pass" && h !== "Mật khẩu");
+  }, [headers, id, rawRole]);
 
   return (
     <div className="space-y-6">
@@ -378,9 +382,7 @@ export default function ModulePage() {
                       </td>
                       {visibleHeaders.map((header, colIndex) => (
                         <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
-                          {row[header] !== undefined && row[header] !== null ? (
-                            header === "Mật khẩu" ? "••••••••" : String(row[header])
-                          ) : ""}
+                          {row[header] !== undefined && row[header] !== null ? String(row[header]) : ""}
                         </td>
                       ))}
                       <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -397,7 +399,7 @@ export default function ModulePage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={headers.length > 0 ? headers.length + 2 : 6} className="px-6 py-12 text-center text-slate-500">
+                    <td colSpan={visibleHeaders.length > 0 ? visibleHeaders.length + 2 : 6} className="px-6 py-12 text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center">
                         <div className="h-12 w-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
                           <Search className="h-6 w-6 text-slate-400" />
@@ -429,7 +431,7 @@ export default function ModulePage() {
               </Button>
             </CardHeader>
             <CardContent className="space-y-4 pt-6 max-h-[60vh] overflow-y-auto">
-              {headers.map(header => (
+              {visibleHeaders.map(header => (
                 <div key={header} className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">{header}</label>
                   <Input 

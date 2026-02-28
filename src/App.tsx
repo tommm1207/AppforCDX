@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import Login from "./pages/Login";
 import DashboardLayout from "./pages/DashboardLayout";
 import Home from "./pages/Home";
@@ -13,7 +13,7 @@ import ModulePage from "./pages/ModulePage";
 import Attendance from "./pages/Attendance";
 
 // A simple auth guard component
-function RequireAuth({ children }: { children: JSX.Element }) {
+function RequireAuth({ children }: { children: React.ReactNode }) {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
   
   if (!isAuthenticated) {

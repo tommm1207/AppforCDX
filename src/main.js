@@ -798,7 +798,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var sbEl = document.getElementById('sidebarMenu');
     if (sbEl && typeof bootstrap !== 'undefined') sidebarBS = new bootstrap.Offcanvas(sbEl);
 
-    document.getElementById('manual-sidebar-btn').addEventListener('click', function () {
+    document.getElementById('manual-sidebar-btn').addEventListener('click', function (e) {
+        e.preventDefault();
         if (window.innerWidth >= 992) document.body.classList.toggle('sidebar-closed');
         else if (sidebarBS) sidebarBS.toggle();
     });
@@ -826,9 +827,6 @@ function handleLogin(res) {
     CURRENT_USER = res.user;
     localStorage.setItem('CURRENT_USER_SESSION', JSON.stringify(CURRENT_USER));
     document.getElementById('user-display-name').innerText = CURRENT_USER.name;
-    
-    // Update sidebar based on user role
-    renderSidebar();
 
     if (Object.keys(GLOBAL_DATA).length > 0) {
         document.getElementById('login-container').classList.add('d-none');
@@ -1000,29 +998,39 @@ function renderDashboard() {
 
     var kpiHTML = `
     <h5 class="fw-bold text-success mb-3"><i class="fas fa-chart-pie me-2"></i>TỔNG QUAN</h5>
-    <div class="row g-3 mb-4 kpi-row">
+    <div class="row g-3 mb-4 kpi-row">`;
+    
+    const isAdmin = CURRENT_USER && CURRENT_USER.role && CURRENT_USER.role.toLowerCase().includes('admin');
+    
+    if (isAdmin) {
+        kpiHTML += `
         <div class="col-12 col-sm-6 col-xl-3 kpi-col">${kpiCard('Nhân sự', stats.user, 'fas fa-users', '#1E88E5', 'nhansu')}</div>
         <div class="col-12 col-sm-6 col-xl-3 kpi-col">${kpiCard('Vật tư', stats.vattu, 'fas fa-box', '#43A047', 'vattu')}</div>
         <div class="col-12 col-sm-6 col-xl-3 kpi-col">${kpiCard('Kho bãi', stats.kho, 'fas fa-warehouse', '#FB8C00', 'dskho')}</div>
-        <div class="col-12 col-sm-6 col-xl-3 kpi-col">${kpiCard('Phiếu NX', stats.phieu, 'fas fa-file-invoice', '#E53935', 'phieunhap')}</div>
-    </div>`;
+        <div class="col-12 col-sm-6 col-xl-3 kpi-col">${kpiCard('Phiếu NX', stats.phieu, 'fas fa-file-invoice', '#E53935', 'phieunhap')}</div>`;
+    } else {
+        kpiHTML += `
+        <div class="col-12 col-sm-6 col-xl-6 kpi-col">${kpiCard('Vật tư', stats.vattu, 'fas fa-box', '#43A047', 'tonkho')}</div>
+        <div class="col-12 col-sm-6 col-xl-6 kpi-col">${kpiCard('Phiếu NX', stats.phieu, 'fas fa-file-invoice', '#E53935', 'phieunhap')}</div>`;
+    }
+    kpiHTML += `</div>`;
     container.innerHTML = kpiHTML;
 
     var menuHTML = `<h5 class="fw-bold text-success mb-3"><i class="fas fa-th me-2"></i>CHỨC NĂNG</h5>`;
-    
-    const role = (CURRENT_USER && CURRENT_USER.role ? CURRENT_USER.role.toLowerCase() : '');
-    const isAdmin = role === 'admin' || role === 'quản lý';
-    const userAllowedModules = ['dashboard', 'phieunhap', 'phieuxuat', 'phieuchuyen', 'tonkho', 'chamcong'];
-
     MENU_STRUCTURE.forEach(g => {
-        menuHTML += `<div class="mb-4"><h6 class="text-muted text-uppercase fw-bold small border-bottom pb-2 mb-3">${g.group}</h6><div class="menu-grid">`;
-        g.items.forEach(i => {
-            const isAllowed = isAdmin || userAllowedModules.includes(i.id);
-            const lockIcon = isAllowed ? '' : '<div class="fas fa-lock text-muted mt-2" style="font-size: 1rem; background: none; width: auto; height: auto; line-height: normal;"></div>';
-            const textClass = isAllowed ? '' : 'text-muted';
-            menuHTML += `<div class="menu-card-modern ${textClass}" onclick="switchTab('${i.id}', null)"><i class="${i.icon}"></i><span>${i.title}</span>${lockIcon}</div>`;
-        });
-        menuHTML += `</div></div>`;
+        let filteredItems = g.items;
+        if (!isAdmin) {
+            const allowedIds = ['phieunhap', 'phieuxuat', 'phieuchuyen', 'tonkho', 'chamcong'];
+            filteredItems = g.items.filter(i => allowedIds.includes(i.id));
+        }
+        
+        if (filteredItems.length > 0) {
+            menuHTML += `<div class="mb-4"><h6 class="text-muted text-uppercase fw-bold small border-bottom pb-2 mb-3">${g.group}</h6><div class="menu-grid">`;
+            filteredItems.forEach(i => {
+                menuHTML += `<div class="menu-card-modern" onclick="switchTab('${i.id}', null)"><i class="${i.icon}"></i><span>${i.title}</span></div>`;
+            });
+            menuHTML += `</div></div>`;
+        }
     });
     container.innerHTML += menuHTML;
     db.appendChild(container);
@@ -1043,24 +1051,6 @@ function kpiCard(l, v, i, c, tabId) {
 
 // --- CHUYỂN TAB ---
 window.switchTab = function (id, el) {
-    if (CURRENT_USER) {
-        const role = (CURRENT_USER.role || '').toLowerCase();
-        const isAdmin = role === 'admin' || role === 'quản lý';
-        
-        // Modules allowed for 'user' role
-        const userAllowedModules = ['dashboard', 'phieunhap', 'phieuxuat', 'phieuchuyen', 'tonkho', 'chamcong'];
-        
-        if (!isAdmin && !userAllowedModules.includes(id)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Từ chối truy cập',
-                text: 'Bạn không có quyền truy cập vào chức năng này.',
-                confirmButtonText: 'Đóng'
-            });
-            return;
-        }
-    }
-
     document.querySelectorAll('.sidebar-item').forEach(e => e.classList.remove('active'));
     if (el) el.classList.add('active');
 
@@ -4032,21 +4022,22 @@ function showLoading(s, text) {
 
 function renderSidebar() {
     var h = '<div class="py-2">';
+    const isAdmin = CURRENT_USER && CURRENT_USER.role && CURRENT_USER.role.toLowerCase().includes('admin');
     
-    const role = (CURRENT_USER && CURRENT_USER.role ? CURRENT_USER.role.toLowerCase() : '');
-    const isAdmin = role === 'admin' || role === 'quản lý';
-    const userAllowedModules = ['dashboard', 'phieunhap', 'phieuxuat', 'phieuchuyen', 'tonkho', 'chamcong'];
-
     MENU_STRUCTURE.forEach(g => {
-        h += `<div class="sidebar-heading">${g.group}</div>`;
-        g.items.forEach(i => {
-            const isAllowed = isAdmin || userAllowedModules.includes(i.id);
-            const lockIcon = isAllowed ? '' : '<div class="fas fa-lock ms-auto text-muted" style="font-size: 0.8em; width: auto; margin-right: 0;"></div>';
-            const textClass = isAllowed ? '' : 'text-muted';
-            h += `<div class="sidebar-item d-flex align-items-center ${textClass}" onclick="switchTab('${i.id}', this)">
-                    <i class="${i.icon} me-2"></i>${i.title} ${lockIcon}
-                  </div>`;
-        });
+        let filteredItems = g.items;
+        if (!isAdmin) {
+            // User only sees: Phieunhap, Phieuxuat, Phieuchuyen, Tonkho, Chamcong
+            const allowedIds = ['phieunhap', 'phieuxuat', 'phieuchuyen', 'tonkho', 'chamcong'];
+            filteredItems = g.items.filter(i => allowedIds.includes(i.id));
+        }
+        
+        if (filteredItems.length > 0) {
+            h += `<div class="sidebar-heading">${g.group}</div>`;
+            filteredItems.forEach(i => {
+                h += `<div class="sidebar-item" onclick="switchTab('${i.id}', this)"><i class="${i.icon}"></i>${i.title}</div>`;
+            });
+        }
     });
     document.querySelector('#sidebarMenu .offcanvas-body').innerHTML = h + '</div>';
 }
@@ -4703,8 +4694,41 @@ window.openAddChildModal = function (childSheet, foreignKey, parentId) {
 
 window.viewProfile = function () {
     if (!CURRENT_USER) return;
-    var html = `<div class="text-center mb-3"><div class="avatar-circle mx-auto bg-success text-white" style="width:80px;height:80px;font-size:2rem"><i class="fas fa-user"></i></div><h4 class="mt-2">${CURRENT_USER.name}</h4><span class="badge bg-secondary">${CURRENT_USER.role || 'Nhân viên'}</span></div>`;
-    Swal.fire({ html: html, showConfirmButton: false });
+    
+    let detailsHtml = '';
+    const excludeKeys = ['ID', 'Họ và tên', 'Phân quyền', 'Chức vụ', 'App_pass', 'name', 'role', 'Delete'];
+    
+    for (const [key, value] of Object.entries(CURRENT_USER)) {
+        if (!excludeKeys.includes(key) && value !== null && value !== undefined && value !== '') {
+            detailsHtml += `
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted small">${key}</span>
+                    <span class="fw-medium text-dark">${value}</span>
+                </div>
+            `;
+        }
+    }
+
+    var html = `
+        <div class="text-center mb-4">
+            <div class="avatar-circle mx-auto bg-success text-white mb-3" style="width:80px;height:80px;font-size:2rem;border:3px solid #e8f5e9;">
+                <i class="fas fa-user"></i>
+            </div>
+            <h4 class="mb-1 fw-bold text-success">${CURRENT_USER.name}</h4>
+            <span class="badge bg-secondary px-3 py-2 rounded-pill">${CURRENT_USER.role || 'Nhân viên'}</span>
+        </div>
+        <div class="text-start bg-light p-3 rounded-4 shadow-sm mb-4">
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span class="text-muted small">Mã nhân viên (ID)</span>
+                <span class="fw-bold text-dark">${CURRENT_USER.ID || CURRENT_USER.id || ''}</span>
+            </div>
+            ${detailsHtml}
+        </div>
+        <button class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm" onclick="Swal.close(); setTimeout(doLogout, 200);">
+            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+        </button>
+    `;
+    Swal.fire({ html: html, showConfirmButton: false, customClass: { popup: 'rounded-4' } });
 }
 
 // --- MOBILE BOTTOM NAV FUNCTIONS ---

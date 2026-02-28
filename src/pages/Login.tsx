@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -34,7 +34,8 @@ export default function Login() {
         localStorage.setItem("currentUser", JSON.stringify({ 
           id: data.user.id, 
           name: data.user.name,
-          role: data.user.role.toLowerCase().includes("admin") ? "admin" : "user" 
+          role: data.user.role.toLowerCase().includes("admin") ? "admin" : "user",
+          rawRole: data.user.role
         }));
         navigate("/");
       } else {
@@ -48,7 +49,8 @@ export default function Login() {
         localStorage.setItem("currentUser", JSON.stringify({ 
           id: "admin", 
           name: "Quản trị viên",
-          role: "admin" 
+          role: "admin",
+          rawRole: "admin app"
         }));
         navigate("/");
       } else {
